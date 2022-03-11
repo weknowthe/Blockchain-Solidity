@@ -1,0 +1,228 @@
+
+// SPDX-License-Identifier: GPL-3.0
+pragma solidity >=0.7.0 <0.9.0;
+
+contract DecentralizedCollegeTracker {
+
+    struct College{
+        string collegeName;
+        string regNo;
+        bool isValid;
+        mapping(string=>Student) studentList;
+    }
+
+    struct Student{
+        string custName;
+        string mobileNumber;
+        string homeAddress;
+        bool isValid;
+    }
+
+    address private university;
+    mapping(address=>College) public collegeList;
+
+    constructor(){
+        university = msg.sender;
+    }
+
+    function getUniversitykDetails() public view isUniversity returns(address){
+        return university;
+    }
+
+    function addCollege(address _address,string memory _collegeName, string memory regNo) public 
+    isUniversity returns(string memory){
+        collegeList[_address].collegeName = _collegeName;
+        collegeList[_address].regNo = regNo;
+        collegeList[_address].isValid = true;
+        return "Added College details successfully";
+    }
+
+    function viewCollege(address _address) public view isUniversity returns(string memory,string memory,uint){
+                if(collegeList[_address].isValid == true){
+            return(
+                collegeList[_address].collegeName,
+                collegeList[_address].regNo
+                                ,45);
+        }
+        else{
+            return ("Invalid College","",7);
+        }
+    }
+
+
+    ///Modifier
+    modifier isUniversity(){
+        require(msg.sender==university," Caller is not a University ");
+        _;
+    }
+}
+
+----------------------------------------------------------------------------
+
+// SPDX-License-Identifier: GPL-3.0
+
+pragma solidity >=0.7.0 <0.9.0;
+import "hardhat/console.sol";
+
+contract KYC_Verfication_Process_for_Banks {
+
+    struct Bank{
+        string name;
+        bool canAddNewCustomer;
+        bool isKYCAllowed;
+        bool isValid;
+        mapping(string => Customer) customerList;
+    }
+
+    struct Customer{
+        string custName;
+        string mobileNumber;
+        string homeAddress;
+        bool isValid;
+    }
+
+    address private centralbank;
+    mapping(address=>Bank) public bankList;
+
+    constructor(){
+        centralbank = msg.sender;
+    }
+
+    function getCentralBankDetails() public view isCentralBank returns(address){
+        return centralbank;
+    }
+
+    //Bank
+    function getBankDetails(address _bankAddress) public isCentralBank isBankValid(_bankAddress)
+    returns(string memory,bool,bool){
+        return(bankList[_bankAddress].name,bankList[_bankAddress].canAddNewCustomer,
+        bankList[_bankAddress].isKYCAllowed
+        );
+    }
+
+    function addBank(address _bankAddress,string memory _name) public isCentralBank  returns(string memory){
+        bankList[_bankAddress].name = _name;
+        bankList[_bankAddress].isKYCAllowed = false;
+        bankList[_bankAddress].canAddNewCustomer = false;
+        bankList[_bankAddress].isValid = true;
+        return "Added Bank details successfully";
+    
+    }
+
+    function allowBankForKYC(address _bankAddress) public isCentralBank isBankValid(_bankAddress) returns(string memory){
+         bankList[_bankAddress].isKYCAllowed = true;
+         return "Allowed KYC";
+    }
+
+    function disableBankForKYC(address _bankAddress) public isCentralBank isBankValid(_bankAddress) returns(string memory){
+         bankList[_bankAddress].isKYCAllowed = false;
+         return " KYC Banded";
+    }
+
+    function enableAddingNewCustomerFunctionallity(address _bankAddress) public isCentralBank isBankValid(_bankAddress) returns(string memory){
+         bankList[_bankAddress].canAddNewCustomer = true;
+         return "Allowed Adding a new Customer";
+    }
+
+    function disableAddingNewCustomerFunctionallity(address _bankAddress) public isCentralBank isBankValid(_bankAddress) returns(string memory){
+         bankList[_bankAddress].canAddNewCustomer = false;
+         return "Disabled Adding a new Customer";
+    }
+
+    //Customer
+
+    function addNewCustomer(address _bankAddress,string memory _custName,string memory _homeAddress,string memory _mobileNumber) public isCentralBank isBankValid(_bankAddress) returns(string memory){
+            Bank storage _bank = bankList[_bankAddress];
+            _bank.customerList[_custName] = Customer({custName:_custName, mobileNumber:_mobileNumber,homeAddress:_homeAddress,isValid:true});
+            return "Customer Added succesfullly";
+    }
+
+
+    function viewYourCustomer(address _bankAddress, string memory _custName) public  isCentralBank isBankValid(_bankAddress) returns(string memory,string memory,string memory)
+    {
+        if(bankList[_bankAddress].customerList[_custName].isValid == true){
+            return(
+                _custName,
+                bankList[_bankAddress].customerList[_custName].mobileNumber,
+                bankList[_bankAddress].customerList[_custName].homeAddress
+            );
+        }
+        else{
+            return ("Invalid Customer","","");
+        }
+    }
+
+    ///Modifier
+    modifier isCentralBank(){
+        require(msg.sender==centralbank," Caller is not a Central Bank");
+        _;
+    }
+
+    modifier isBankValid(address _bankAddress){
+       require(bankList[_bankAddress].isValid = true,"In-Valid bank");
+        _;
+    }
+}
+
+--------------------------------------------------------------------------------------------------------------
+
+
+// SPDX-License-Identifier: GPL-3.0
+pragma solidity >=0.7.0 <0.9.0;
+
+contract DecentralizedCollegeTracker {
+
+    struct College{
+        string collegeName;
+        string regNo;
+        bool isValid;
+        mapping(string=>Student) studentList;
+    }
+
+    struct Student{
+        string custName;
+        string mobileNumber;
+        string homeAddress;
+        bool isValid;
+    }
+
+    address private university;
+    mapping(address=>College) public collegeList;
+
+    constructor(){
+        university = msg.sender;
+    }
+
+    function getUniversitykDetails() public view isUniversity returns(address){
+        return university;
+    }
+
+    function addCollege(address _address,string memory _collegeName, string memory regNo) public 
+    isUniversity returns(string memory){
+        collegeList[_address].collegeName = _collegeName;
+        collegeList[_address].regNo = regNo;
+        collegeList[_address].isValid = true;
+        return "Added College details successfully";
+    }
+
+    function viewCollege(address _address) public view isUniversity returns(string memory,string memory,uint){
+                if(collegeList[_address].isValid == true){
+            return(
+                collegeList[_address].collegeName,
+                collegeList[_address].regNo
+                                ,45);
+        }
+        else{
+            return ("Invalid College","",7);
+        }
+    }
+
+
+    ///Modifier
+    modifier isUniversity(){
+        require(msg.sender==university," Caller is not a University ");
+        _;
+    }
+
+
+}
