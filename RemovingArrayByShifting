@@ -1,0 +1,27 @@
+
+// SPDX-License-Identifier: GPL-3.0
+pragma solidity >=0.7.0 <0.9.0;
+import "hardhat/console.sol";
+
+contract RemovingArrayByShifting {
+
+        uint[] public intArray;
+
+        constructor(uint[] memory _array) payable {
+            intArray = _array;
+            console.log(" <> ");
+            console.log(msg.value);
+        }
+
+        function removeAnElementInAnArray(uint8 _index)  public{
+            uint[] memory _intArraySrc = intArray;
+            uint[] memory _intArrayDesc = intArray;
+            for(uint8 _loopCount = _index; _loopCount<_intArraySrc.length; _loopCount++){
+            
+                _intArraySrc[_loopCount] = _intArrayDesc[_loopCount+1];
+            }
+            delete _intArraySrc[_intArraySrc.length-1];
+            intArray = _intArraySrc;
+
+        }
+}
