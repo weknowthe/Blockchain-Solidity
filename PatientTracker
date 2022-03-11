@@ -1,0 +1,72 @@
+// SPDX-License-Identifier: GPL-3.0
+pragma solidity >=0.7.0 <0.9.0;
+import "hardhat/console.sol";
+
+contract PatientTracker {
+
+    address public hospital;
+    string[] staffList;
+    int private patientCount = 0;
+
+    struct Patient{
+        string name; string hospitalizedReason;string date;bool isDischarged;
+    }
+
+    constructor(){
+        hospital = msg.sender;
+    }
+    mapping(string=>Patient) private patientList;
+    //mapping(address=>string) private staffList;
+
+    function addStaffMembers(string[] memory _staffIds,address _address) public isHospital(_address) returns(string memory){       
+       console.log(_staffIds.length);
+       for(uint8 i = 0; i < _staffIds.length; i++){
+             staffList.push(_staffIds[i]);
+        }
+        return " Add Staff Members successfully ";
+    }
+
+    function addPatient(string memory srNo,string memory _name,string memory _date,string memory _reason,address _address)
+     public isHospital(_address) returns(string memory){
+        //address addr = address(keccak256(abi.encodePacked(now)));
+        patientList[srNo].name = _name;
+        patientList[srNo].date = _date;
+        patientList[srNo].hospitalizedReason = _reason;
+        patientList[srNo].isDischarged = false;
+        patientCount += 1;
+        return " Added Patient details successfully ";    
+    }
+    function getPatientDetails(string memory srNo,string memory staffMember) public  isStaffMember(staffMember) view returns(string memory,string memory,string memory,bool){
+        return(patientList[srNo].name,
+        patientList[srNo].date,
+        patientList[srNo].hospitalizedReason,
+        patientList[srNo].isDischarged
+        );        
+            
+    }
+
+    function dischargePatient(string memory srNo,string memory staffMember) public isStaffMember(staffMember) returns(string memory){
+        patientList[srNo].isDischarged = true;
+        return " Patient Discharged successfully ";
+    }
+
+    function countOfOfOnBoardedPatient(address _address) public isHospital(_address) view returns(int){
+        return patientCount;
+    }     
+   
+    
+    modifier isHospital(address _address){
+       require(hospital == _address,"  Caller is not a Hospital ");
+        _;
+    }
+
+    modifier isStaffMember(string memory _staffId){    
+        bool _returnValue = false; 
+        for(uint8 i = 0; i < staffList.length; i++){
+            if (keccak256(abi.encodePacked(staffList[i])) == keccak256(abi.encodePacked(_staffId))) {
+                _returnValue = true;}
+        }   
+       require(_returnValue,"  Caller is not a StaffMember ");
+        _;
+    }
+}
